@@ -28,14 +28,14 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
     public void onEnable() {
         this.getServer().getPluginManager().registerEvents(this, this);
         for (String command : this.getDescription().getCommands().keySet()) {
-            this.getServer().getPluginCommand(command).setExecutor(this);
+            Objects.requireNonNull(this.getServer().getPluginCommand(command)).setExecutor(this);
         }
         this.hunterToIndex = new HashMap<>();
         this.speedrunners = new ArrayList<>();
         this.queuedUUIDs = new ArrayList<>();
     }
 
-    public boolean onCommand(final CommandSender commandSender, final Command command, final String label, final String[] arguments) {
+    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] arguments) {
         if (command.getName().equalsIgnoreCase("hunter")) {
             if (arguments.length < 2) {
                 return sendInvalid(commandSender);
