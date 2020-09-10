@@ -43,7 +43,7 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
             return this.processHunterCommand(sender, arguments);
         } else if (command.getName().equalsIgnoreCase("hunterinfo")) {
             if (arguments.length == 0) {
-                sender.sendMessage(ChatColor.RED + "Invalid usage. Try: " + ChatColor.YELLOW + "/hunterinfo <name>");
+                sender.sendMessage(ChatColor.RED + "Invalid usage. Use: " + ChatColor.YELLOW + "/hunterinfo <name>");
                 return false;
             }
             Player player = Bukkit.getPlayer(arguments[0]);
@@ -52,7 +52,7 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
                 sender.sendMessage(ChatColor.RED + "Player not found.");
                 return false;
             } else if ((index = this.hunterToIndex.get(player.getUniqueId())) == null) {
-                sender.sendMessage(ChatColor.RED + "Player is not a hunter.");
+                sender.sendMessage(ChatColor.YELLOW + player.getName() + ChatColor.RED + " is not a hunter.");
                 return false;
             }
 
@@ -131,20 +131,20 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
                     index = this.getHighestIndex() + 1;
                     this.hunterToIndex.put(player.getUniqueId(), index);
                 }
-                sender.sendMessage(ChatColor.GREEN + player.getName() + String.format(" is now a hunter. (%d)", index + 1));
+                sender.sendMessage(ChatColor.YELLOW + player.getName() + ChatColor.GREEN +  String.format(" is now a hunter. (%d)", index + 1));
                 player.getInventory().addItem(new ItemStack(Material.COMPASS));
             } else if (!this.speedrunners.contains(player.getUniqueId())) {
-                sender.sendMessage(ChatColor.RED + player.getName() + " is already a hunter!");
+                sender.sendMessage(ChatColor.YELLOW + player.getName() +  ChatColor.RED + " is already a hunter!");
             } else {
-                sender.sendMessage(ChatColor.RED + player.getName() + " cannot be a hunter and a speedrunner!");
+                sender.sendMessage(ChatColor.YELLOW + player.getName() + ChatColor.RED + " cannot be a hunter and a speedrunner!");
             }
         } else if (arguments[0].equalsIgnoreCase("remove")) {
             if (this.hunterToIndex.containsKey(player.getUniqueId())) {
                 this.hunterToIndex.remove(player.getUniqueId());
-                sender.sendMessage(ChatColor.GREEN + player.getName() + " is no longer a hunter.");
+                sender.sendMessage(ChatColor.YELLOW + player.getName() + ChatColor.GREEN + " is no longer a hunter.");
                 player.getInventory().remove(new ItemStack(Material.COMPASS));
             } else {
-                sender.sendMessage(ChatColor.RED + player.getName() + " is not a hunter!");
+                sender.sendMessage(ChatColor.YELLOW + player.getName() + ChatColor.RED + " is not a hunter!");
             }
         } else {
             return sendInvalid(sender);
@@ -154,9 +154,11 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
 
     private void processSpeedrunnerCommand(CommandSender sender, String[] arguments) {
         if (arguments.length < 2) {
-            sender.sendMessage(ChatColor.RED + "Invalid usage. Use:");
-            sender.sendMessage(ChatColor.YELLOW + "/speedrunner add <name>");
-            sender.sendMessage(ChatColor.YELLOW + "/speedrunner remove <name>");
+            sender.sendMessage(ChatColor.RED + "Invalid usage. Use:\n" +
+                    ChatColor.YELLOW + "/speedrunner add <name>\n" +
+                    ChatColor.YELLOW + "/speedrunner remove <name>\n" +
+                    ChatColor.YELLOW + "/speedrunner auto <name>\n" +
+                    ChatColor.YELLOW + "/speedrunner clear");
             return;
         }
 
@@ -168,20 +170,20 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
         }
 
         if (arguments[0].equalsIgnoreCase("add")) {
-            if (!this.speedrunners.contains(player.getUniqueId()) && ! this.hunterToIndex.containsKey(player.getUniqueId())) {
+            if (!this.speedrunners.contains(player.getUniqueId()) && !this.hunterToIndex.containsKey(player.getUniqueId())) {
                 this.speedrunners.add(player.getUniqueId());
-                sender.sendMessage(ChatColor.GREEN + player.getName() + " is now a speedrunner.");
+                sender.sendMessage(ChatColor.YELLOW + player.getName() + ChatColor.GREEN + " is now a speedrunner.");
             } else if (!this.hunterToIndex.containsKey(player.getUniqueId())) {
-                sender.sendMessage(ChatColor.RED + player.getName() + " is already a speedrunner.");
+                sender.sendMessage(ChatColor.YELLOW + player.getName() + ChatColor.RED + " is already a speedrunner.");
             } else {
-                sender.sendMessage(ChatColor.RED + player.getName() + " cannot be a speedrunner and hunter!");
+                sender.sendMessage(ChatColor.YELLOW + player.getName() + ChatColor.RED + " cannot be a speedrunner and hunter!");
             }
         } else if (arguments[0].equalsIgnoreCase("remove")) {
             if (this.speedrunners.contains(player.getUniqueId())) {
                 this.speedrunners.remove(player.getUniqueId());
-                sender.sendMessage(ChatColor.GREEN + player.getName() + " is no longer a speedrunner.");
+                sender.sendMessage(ChatColor.YELLOW + player.getName() + ChatColor.GREEN + " is no longer a speedrunner.");
             } else {
-                sender.sendMessage(ChatColor.RED + player.getName() + " is not a speedrunner.");
+                sender.sendMessage(ChatColor.YELLOW + player.getName() + ChatColor.RED + " is not a speedrunner.");
             }
         } else if (arguments[0].equalsIgnoreCase("auto")) {
             this.speedrunners.clear();
@@ -196,10 +198,19 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
                 }
             }
             Bukkit.broadcastMessage(ChatColor.GREEN + "Hunter and speedrunners have automatically been assigned! Use /hunterlist and /speedrunnerlist to view.");
+        } else if (arguments[0].equalsIgnoreCase("clear")) {
+            if (this.speedrunners.isEmpty()) {
+                sender.sendMessage(ChatColor.GRAY + "There are no speedrunners to clear.");
+            } else {
+                this.speedrunners.clear();
+                Bukkit.broadcastMessage(ChatColor.GREEN + "All speedrunners have been cleared!");
+            }
         } else {
-            sender.sendMessage(ChatColor.RED + "Invalid usage. Use:");
-            sender.sendMessage(ChatColor.YELLOW + "/speedrunner add <name>");
-            sender.sendMessage(ChatColor.YELLOW + "/speedrunner remove <name>");
+            sender.sendMessage(ChatColor.RED + "Invalid usage. Use:" +
+                    ChatColor.YELLOW + "/speedrunner add <name>\n" +
+                    ChatColor.YELLOW + "/speedrunner remove <name>\n" +
+                    ChatColor.YELLOW + "/speedrunner auto <name>\n" +
+                    ChatColor.YELLOW + "/speerunner clear");
         }
     }
 
@@ -220,7 +231,7 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
 
         if (index == -1) {
             for (Player player : Bukkit.getOnlinePlayers()) {
-                if (!this.hunterToIndex.containsKey(player.getUniqueId())) players.add(player);
+                if (this.speedrunners.contains(player.getUniqueId())) players.add(player);
             }
             return players;
         }
@@ -236,11 +247,12 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
         return players;
     }
 
-    private static boolean sendInvalid(final CommandSender sender) {
-        sender.sendMessage(ChatColor.RED + "Invalid usage. Use:");
-        sender.sendMessage(ChatColor.YELLOW + "/hunter add <name>");
-        sender.sendMessage(ChatColor.YELLOW + "/hunter add <number> <name>");
-        sender.sendMessage(ChatColor.YELLOW + "/hunter remove <name>");
+    private static boolean sendInvalid(CommandSender sender) {
+        sender.sendMessage(ChatColor.RED + "Invalid usage. Use:\n" +
+                ChatColor.YELLOW + "/hunter add <name>\n" +
+                ChatColor.YELLOW + "/hunter add <number> <name>\n" +
+                ChatColor.YELLOW + "/hunter remove <name>\n" +
+                ChatColor.YELLOW + "/hunter clear");
         return false;
     }
 
@@ -264,7 +276,7 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
                 return;
             }
             player.setCompassTarget(nearest.getLocation());
-            player.sendMessage(ChatColor.GREEN + "Compass is now pointing to " + nearest.getName() + ".");
+            player.sendMessage(ChatColor.GREEN + "Compass is now pointing to " + ChatColor.YELLOW + nearest.getName() + ChatColor.GREEN + ".");
         }
 
     }

@@ -6,17 +6,17 @@ authors: [LifeKnight]
 description: Allows for a player to speedrun while another player hunts them. Another player can hunt the player who hunts the speedrunner. Another player can hunt the player who hunts the player who hunts the speedrunner, etc.
 commands:
   hunter:
-    description: Hunter commands.
+    description: Hunter add/remove/clear commands.
     permission: op
   hunterinfo:
-    description: Hunter information.
+    description: Provides information on who a player is hunting.
   hunterlist:
-    description: Registered hunters.
+    description: Lists registered hunters.
   speedrunner:
-    description: Speedrunner commands.
+    description: Speedrunner add/remove/clear/auto commands.
     permission: op
   speedrunnerlist:
-    description: Registered speerunners.
+    description: Lists registered speedrunners.
   manhuntmanhuntclear:
-    description: Clear manhunt.
+    description: Clear speedrunners and hunters.
     permission: op
