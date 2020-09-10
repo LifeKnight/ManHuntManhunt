@@ -57,7 +57,7 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
             }
 
             List<Player> players = this.getPlayersOfIndex(index - 1);
-            if (player.isEmpty()) {
+            if (players.isEmpty()) {
                 commandSender.sendMessage(ChatColor.YELLOW + player.getName() + ChatColor.RED + " is hunting nobody.");
             } else if (players.size() == 1) {
                 commandSender.sendMessage(ChatColor.YELLOW + player.getName() + ChatColor.GREEN + " is hunting " + ChatColor.YELLOW + players.get(0).getName());
@@ -97,7 +97,7 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
                     this.warn("Tried to add player to speedrunnerlist for command, error invoked: %s", exception.getMessage());
                 }
             }
-        } else if (command.getName().equalsIgnoreCase("manhuntmanhuntclear")) {
+        } else if (command.getName().equalsIgnoreCase("mhmhclear")) {
             if (!this.speedrunners.isEmpty() || !this.hunterToIndex.isEmpty()) {
                 this.speedrunners.clear();
                 this.hunterToIndex.clear();
@@ -110,6 +110,24 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
     }
 
     private boolean processHunterCommand(CommandSender sender, String[] arguments) {
+        if (arguments.length < 1) {
+            return sendInvalid(sender);
+        }
+
+        if (arguments[0].equalsIgnoreCase("clear")) {
+            if (this.hunterToIndex.isEmpty()) {
+                sender.sendMessage(ChatColor.GRAY + "There are no hunters to remove.");
+            } else {
+                this.hunterToIndex.clear();
+                Bukkit.broadcastMessage(ChatColor.GREEN + "All hunters have been removed!");
+            }
+            return false;
+        }
+
+        if (arguments.length < 2) {
+            return sendInvalid(sender);
+        }
+
         Player player = Bukkit.getPlayer(arguments.length > 2 ? arguments[2] : arguments[1]);
         if (player == null) {
             sender.sendMessage(ChatColor.RED + "Player not found.");
@@ -153,6 +171,25 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
     }
 
     private void processSpeedrunnerCommand(CommandSender sender, String[] arguments) {
+        if (arguments.length < 1) {
+            sender.sendMessage(ChatColor.RED + "Invalid usage. Use:\n" +
+                    ChatColor.YELLOW + "/speedrunner add <name>\n" +
+                    ChatColor.YELLOW + "/speedrunner remove <name>\n" +
+                    ChatColor.YELLOW + "/speedrunner auto <name>\n" +
+                    ChatColor.YELLOW + "/speedrunner clear");
+            return;
+        }
+
+        if (arguments[0].equalsIgnoreCase("clear")) {
+            if (this.speedrunners.isEmpty()) {
+                sender.sendMessage(ChatColor.GRAY + "There are no speedrunners to clear.");
+            } else {
+                this.speedrunners.clear();
+                Bukkit.broadcastMessage(ChatColor.GREEN + "All speedrunners have been cleared!");
+            }
+            return;
+        }
+
         if (arguments.length < 2) {
             sender.sendMessage(ChatColor.RED + "Invalid usage. Use:\n" +
                     ChatColor.YELLOW + "/speedrunner add <name>\n" +
@@ -161,6 +198,7 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
                     ChatColor.YELLOW + "/speedrunner clear");
             return;
         }
+
 
         Player player = Bukkit.getPlayer(arguments[1]);
 
@@ -198,28 +236,19 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
                 }
             }
             Bukkit.broadcastMessage(ChatColor.GREEN + "Hunter and speedrunners have automatically been assigned! Use /hunterlist and /speedrunnerlist to view.");
-        } else if (arguments[0].equalsIgnoreCase("clear")) {
-            if (this.speedrunners.isEmpty()) {
-                sender.sendMessage(ChatColor.GRAY + "There are no speedrunners to clear.");
-            } else {
-                this.speedrunners.clear();
-                Bukkit.broadcastMessage(ChatColor.GREEN + "All speedrunners have been cleared!");
-            }
-        } else {
-            sender.sendMessage(ChatColor.RED + "Invalid usage. Use:" +
+        } sender.sendMessage(ChatColor.RED + "Invalid usage. Use:" +
                     ChatColor.YELLOW + "/speedrunner add <name>\n" +
                     ChatColor.YELLOW + "/speedrunner remove <name>\n" +
                     ChatColor.YELLOW + "/speedrunner auto <name>\n" +
                     ChatColor.YELLOW + "/speerunner clear");
         }
-    }
 
     private void warn(String format, Object... objects) {
         this.getLogger().warning("ManHuntManHunt > " + String.format(format, objects));
     }
 
     private int getHighestIndex() {
-        int i = 0;
+        int i = -1;
         for (int index : this.hunterToIndex.values()) {
             i = Math.max(i, index);
         }
@@ -299,7 +328,7 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
                         Player player1 = Bukkit.getPlayer(uuid);
                         if (player1 != null) {
                             Bukkit.broadcastMessage(String.format("%s%s %sis now a hunter of index %s%d%s.",
-                                    ChatColor.GREEN, player1.getName(), ChatColor.YELLOW, ChatColor.GREEN, theIndex, ChatColor.YELLOW));
+                                    ChatColor.YELLOW, player1.getName(), ChatColor.GREEN, ChatColor.YELLOW, theIndex, ChatColor.GREEN));
                         }
                     } else {
                         replacementMap.put(uuid, index);
@@ -333,13 +362,13 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
     @EventHandler
     public void onPlayerRespawnEvent(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
-        if (this.queuedUUIDs.contains(player.getUniqueId())) {
+        if (this.queuedUUIDs.contains(player.getUniqueId()) && !player.getInventory().contains(Material.COMPASS)) {
             player.getInventory().addItem(new ItemStack(Material.COMPASS));
             int newIndex = this.getHighestIndex() + 1;
             this.hunterToIndex.put(player.getUniqueId(), newIndex);
             this.queuedUUIDs.remove(player.getUniqueId());
             Bukkit.broadcastMessage(String.format("%s%s %sis now a hunter of index %s%d%s.",
-                    ChatColor.GREEN, player.getName(), ChatColor.YELLOW, ChatColor.GREEN, newIndex + 1, ChatColor.YELLOW));
+                    ChatColor.YELLOW, player.getName(), ChatColor.GREEN, ChatColor.YELLOW, newIndex + 1, ChatColor.GREEN));
         }
     }
 

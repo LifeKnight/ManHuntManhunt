@@ -17,6 +17,6 @@ commands:
     permission: op
   speedrunnerlist:
     description: Lists registered speedrunners.
-  manhuntmanhuntclear:
+  mhmhclear:
     description: Clear speedrunners and hunters.
     permission: op
