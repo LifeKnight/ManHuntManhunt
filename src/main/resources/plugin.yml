@@ -1,0 +1,22 @@
+name: ManHuntManHunt
+version: ${project.version}
+main: com.lifeknight.manhuntmanhunt.ManHuntManHunt
+api-version: 1.16
+authors: [LifeKnight]
+description: Allows for a player to speedrun while another player hunts them. Another player can hunt the player who hunts the speedrunner. Another player can hunt the player who hunts the player who hunts the speedrunner, etc.
+commands:
+  hunter:
+    description: Hunter commands.
+    permission: op
+  hunterinfo:
+    description: Hunter information.
+  hunterlist:
+    description: Registered hunters.
+  speedrunner:
+    description: Speedrunner commands.
+    permission: op
+  speedrunnerlist:
+    description: Registered speerunners.
+  manhuntmanhuntclear:
+    description: Clear manhunt.
+    permission: op
