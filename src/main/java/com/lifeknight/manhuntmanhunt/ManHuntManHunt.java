@@ -231,12 +231,14 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
                 }
             }
             Bukkit.broadcastMessage(ChatColor.GREEN + "Hunter and speedrunners have automatically been assigned! Use /hunterlist and /speedrunnerlist to view.");
-        } sender.sendMessage(ChatColor.RED + "Invalid usage. Use:" +
+        } else {
+            sender.sendMessage(ChatColor.RED + "Invalid usage. Use:\n" +
                     ChatColor.YELLOW + "/speedrunner add <name>\n" +
                     ChatColor.YELLOW + "/speedrunner remove <name>\n" +
                     ChatColor.YELLOW + "/speedrunner auto <name>\n" +
                     ChatColor.YELLOW + "/speerunner clear");
         }
+    }
 
     private void warn(String format, Object... objects) {
         this.getLogger().warning("ManHuntManHunt > " + String.format(format, objects));
@@ -326,7 +328,7 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
                                     ChatColor.YELLOW, player1.getName(), ChatColor.GREEN, ChatColor.YELLOW, theIndex, ChatColor.GREEN));
                         }
                     } else {
-                        replacementMap.put(uuid, index);
+                        replacementMap.put(uuid, theIndex);
                     }
                 }
                 this.hunterToIndex = replacementMap;
@@ -358,7 +360,8 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
     public void onPlayerRespawnEvent(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
         if (this.queuedUUIDs.contains(player.getUniqueId())) {
-            if (!player.getInventory().contains(Material.COMPASS)) player.getInventory().addItem(new ItemStack(Material.COMPASS));
+            if (!player.getInventory().contains(Material.COMPASS))
+                player.getInventory().addItem(new ItemStack(Material.COMPASS));
             int newIndex = this.getHighestIndex() + 1;
             this.hunterToIndex.put(player.getUniqueId(), newIndex);
             this.queuedUUIDs.remove(player.getUniqueId());
@@ -388,7 +391,7 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
                                     ChatColor.GREEN, player1.getName(), ChatColor.YELLOW, ChatColor.GREEN, theIndex, ChatColor.YELLOW));
                         }
                     } else {
-                        replacementMap.put(uuid, index);
+                        replacementMap.put(uuid, theIndex);
                     }
                 }
                 this.hunterToIndex = replacementMap;
