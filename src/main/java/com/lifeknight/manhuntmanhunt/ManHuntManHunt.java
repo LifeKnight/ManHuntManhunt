@@ -37,9 +37,7 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
 
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] arguments) {
         if (command.getName().equalsIgnoreCase("hunter")) {
-            if (arguments.length < 2) {
-                return sendInvalid(commandSender);
-            }
+            if (arguments.length < 1) return sendInvalid(commandSender);
             return this.processHunterCommand(commandSender, arguments);
         } else if (command.getName().equalsIgnoreCase("hunterinfo")) {
             if (arguments.length == 0) {
@@ -60,7 +58,7 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
             if (players.isEmpty()) {
                 commandSender.sendMessage(ChatColor.YELLOW + player.getName() + ChatColor.RED + " is hunting nobody.");
             } else if (players.size() == 1) {
-                commandSender.sendMessage(ChatColor.YELLOW + player.getName() + ChatColor.GREEN + " is hunting " + ChatColor.YELLOW + players.get(0).getName());
+                commandSender.sendMessage(ChatColor.YELLOW + player.getName() + ChatColor.GREEN + " is hunting " + ChatColor.YELLOW + players.get(0).getName() + ChatColor.GREEN + ".");
             } else {
                 StringBuilder message = new StringBuilder(ChatColor.YELLOW + player.getName() + ChatColor.GREEN + " is hunting ");
 
@@ -110,10 +108,6 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
     }
 
     private boolean processHunterCommand(CommandSender sender, String[] arguments) {
-        if (arguments.length < 1) {
-            return sendInvalid(sender);
-        }
-
         if (arguments[0].equalsIgnoreCase("clear")) {
             if (this.hunterToIndex.isEmpty()) {
                 sender.sendMessage(ChatColor.GRAY + "There are no hunters to remove.");
@@ -232,6 +226,7 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
             for (Player player1 : player.getServer().getOnlinePlayers()) {
                 if (!player1.equals(player)) {
                     this.hunterToIndex.put(player1.getUniqueId(), index);
+                    player1.getInventory().addItem(new ItemStack(Material.COMPASS));
                     index++;
                 }
             }
@@ -362,8 +357,8 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
     @EventHandler
     public void onPlayerRespawnEvent(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
-        if (this.queuedUUIDs.contains(player.getUniqueId()) && !player.getInventory().contains(Material.COMPASS)) {
-            player.getInventory().addItem(new ItemStack(Material.COMPASS));
+        if (this.queuedUUIDs.contains(player.getUniqueId()) {
+            if (!player.getInventory().contains(Material.COMPASS))) player.getInventory().addItem(new ItemStack(Material.COMPASS));
             int newIndex = this.getHighestIndex() + 1;
             this.hunterToIndex.put(player.getUniqueId(), newIndex);
             this.queuedUUIDs.remove(player.getUniqueId());
