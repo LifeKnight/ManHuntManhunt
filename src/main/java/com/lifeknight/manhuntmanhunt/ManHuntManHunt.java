@@ -357,8 +357,8 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
     @EventHandler
     public void onPlayerRespawnEvent(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
-        if (this.queuedUUIDs.contains(player.getUniqueId()) {
-            if (!player.getInventory().contains(Material.COMPASS))) player.getInventory().addItem(new ItemStack(Material.COMPASS));
+        if (this.queuedUUIDs.contains(player.getUniqueId())) {
+            if (!player.getInventory().contains(Material.COMPASS)) player.getInventory().addItem(new ItemStack(Material.COMPASS));
             int newIndex = this.getHighestIndex() + 1;
             this.hunterToIndex.put(player.getUniqueId(), newIndex);
             this.queuedUUIDs.remove(player.getUniqueId());
