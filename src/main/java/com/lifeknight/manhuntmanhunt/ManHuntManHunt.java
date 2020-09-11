@@ -144,7 +144,7 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
                     this.hunterToIndex.put(player.getUniqueId(), index);
                 }
                 sender.sendMessage(ChatColor.YELLOW + player.getName() + ChatColor.GREEN + String.format(" is now a hunter. (%d)", index + 1));
-                player.getInventory().addItem(new ItemStack(Material.COMPASS));
+                if (!player.getInventory().contains(Material.COMPASS)) player.getInventory().addItem(new ItemStack(Material.COMPASS));
             } else if (!this.speedrunners.contains(player.getUniqueId())) {
                 sender.sendMessage(ChatColor.YELLOW + player.getName() + ChatColor.RED + " is already a hunter!");
             } else {
@@ -226,7 +226,7 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
             for (Player player1 : player.getServer().getOnlinePlayers()) {
                 if (!player1.equals(player)) {
                     this.hunterToIndex.put(player1.getUniqueId(), index);
-                    player1.getInventory().addItem(new ItemStack(Material.COMPASS));
+                    if (!player1.getInventory().contains(Material.COMPASS)) player1.getInventory().addItem(new ItemStack(Material.COMPASS));
                     index++;
                 }
             }
@@ -360,8 +360,7 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
     public void onPlayerRespawnEvent(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
         if (this.queuedUUIDs.contains(player.getUniqueId())) {
-            if (!player.getInventory().contains(Material.COMPASS))
-                player.getInventory().addItem(new ItemStack(Material.COMPASS));
+            if (!player.getInventory().contains(Material.COMPASS)) player.getInventory().addItem(new ItemStack(Material.COMPASS));
             int newIndex = this.getHighestIndex() + 1;
             this.hunterToIndex.put(player.getUniqueId(), newIndex);
             this.queuedUUIDs.remove(player.getUniqueId());
