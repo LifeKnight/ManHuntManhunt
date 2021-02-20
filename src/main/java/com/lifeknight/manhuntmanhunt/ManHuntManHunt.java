@@ -20,7 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
 
-public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecutor {
+public class ManHuntManHunt extends JavaPlugin implements Listener {
     private Map<UUID, Integer> hunterToIndex;
     private List<UUID> speedrunners;
     private List<UUID> queuedUUIDs;
@@ -28,7 +28,7 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
     public void onEnable() {
         this.getServer().getPluginManager().registerEvents(this, this);
         for (String command : this.getDescription().getCommands().keySet()) {
-            Objects.requireNonNull(this.getServer().getPluginCommand(command)).setExecutor(this);
+            Objects.requireNonNull(this.getServer().getPluginCommand(command)).setExecutor(new ManhuntManhuntCommand());
         }
         this.hunterToIndex = new HashMap<>();
         this.speedrunners = new ArrayList<>();
@@ -60,7 +60,7 @@ public class ManHuntManHunt extends JavaPlugin implements Listener, CommandExecu
             } else if (players.size() == 1) {
                 commandSender.sendMessage(ChatColor.YELLOW + player.getName() + ChatColor.GREEN + " is hunting " + ChatColor.YELLOW + players.get(0).getName() + ChatColor.GREEN + ".");
             } else {
-                StringBuilder message = new StringBuilder(ChatColor.YELLOW + player.getName() + ChatColor.GREEN + " is hunting ");
+                StringBuilder message = new StringBuilder(ChatColor.YELLOW + player.getName() + ChatColor.GREEN + " is hunting: ");
 
                 for (Player player1 : players) {
                     message.append(System.getProperty("line.separator")).append(ChatColor.YELLOW).append(player1.getName());
